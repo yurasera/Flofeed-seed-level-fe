@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="id">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Belajar Git &amp; GitHub Untuk Pemula</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg-1: #08101a;
+            --bg-2: #0d1623;
+            --card: rgba(14, 20, 32, 0.72);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text: #f4f7fb;
+            --muted: rgba(244, 247, 251, 0.66);
+            --accent: #7dd3fc;
+            --accent-2: #8ef0b4;
+            --future: rgba(244, 247, 251, 0.28);
+            --shadow: 0 28px 80px rgba(0, 0, 0, 0.46);
+            --title-time: 1.2s;
+            --roadmap-time: 8s;
+            --progress-time: 3.5s;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            min-height: 100%;
+            background:
+                radial-gradient(circle at top, rgba(125, 211, 252, 0.18), transparent 32%),
+                radial-gradient(circle at 80% 18%, rgba(142, 240, 180, 0.12), transparent 26%),
+                linear-gradient(180deg, var(--bg-1), var(--bg-2));
+            color: var(--text);
+            overflow-x: hidden;
+        }
+
+        body {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 24px;
+        }
+
+        .board {
+            width: min(960px, 100%);
+            border-radius: 30px;
+            padding: clamp(24px, 4vw, 48px);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .board::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+            background-size: 38px 38px;
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 90%);
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .section {
+            position: relative;
+            display: grid;
+            gap: 28px;
+            z-index: 1;
+        }
+
+        .hero {
+            text-align: center;
+            display: grid;
+            gap: 14px;
+            justify-items: center;
+            animation: heroIn var(--title-time) cubic-bezier(0.2, 0.8, 0.2, 1) both;
+        }
+
+        .hero h1 {
+            margin: 0;
+            font-size: clamp(2.4rem, 7vw, 5.8rem);
+            line-height: 0.98;
+            letter-spacing: -0.06em;
+            text-wrap: balance;
+        }
+
+        .hero .subtitle {
+            margin: 0;
+            font-size: clamp(1rem, 2.2vw, 1.35rem);
+            color: var(--muted);
+            max-width: 34rem;
+        }
+
+        @keyframes heroIn {
+            from {
+                opacity: 0;
+                transform: translateY(24px) scale(0.94);
+                filter: blur(2px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .roadmap-wrap {
+            display: grid;
+            place-items: center;
+            gap: 18px;
+        }
+
+        .roadmap {
+            width: min(620px, 100%);
+            padding: 28px 24px;
+            border-radius: 24px;
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.26);
+        }
+
+        .steps {
+            display: grid;
+            justify-items: center;
+            gap: 16px;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: clamp(1.15rem, 2.6vw, 1.8rem);
+            line-height: 1.1;
+        }
+
+        .steps li {
+            width: 100%;
+            text-align: center;
+            opacity: 0.18;
+            transform: translateY(10px);
+            color: var(--future);
+            transition: opacity 420ms ease, transform 420ms ease, color 420ms ease;
+        }
+
+        .steps li.visible {
+            color: var(--text);
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .steps .root {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .connector {
+            display: grid;
+            place-items: center;
+            color: rgba(255, 255, 255, 0.46);
+            font-size: 1.15rem;
+            line-height: 1;
+            height: 14px;
+            overflow: hidden;
+            opacity: 0;
+            transform: scaleY(0.5);
+            animation: connectorIn 500ms ease forwards;
+        }
+
+        .connector.c1 {
+            animation-delay: 1.9s;
+        }
+
+        .connector.c2 {
+            animation-delay: 3.3s;
+        }
+
+        .connector.c3 {
+            animation-delay: 4.7s;
+        }
+
+        .connector.c4 {
+            animation-delay: 6.1s;
+        }
+
+        @keyframes connectorIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px) scaleY(0.5);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scaleY(1);
+            }
+        }
+
+        .reveal-1 {
+            animation: revealStep 520ms ease forwards 1.6s;
+        }
+
+        .reveal-2 {
+            animation: revealStep 520ms ease forwards 3.0s;
+        }
+
+        .reveal-3 {
+            animation: revealStep 520ms ease forwards 4.4s;
+        }
+
+        .reveal-4 {
+            animation: revealStep 520ms ease forwards 5.8s;
+        }
+
+        .reveal-5 {
+            animation: revealStep 520ms ease forwards 7.2s;
+        }
+
+        @keyframes revealStep {
+            from {
+                opacity: 0.12;
+                transform: translateY(12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .progression {
+            width: min(560px, 100%);
+            margin: 0 auto;
+            display: grid;
+            gap: 18px;
+            justify-items: center;
+            padding-top: 8px;
+        }
+
+        .progress-card {
+            position: relative;
+            width: 100%;
+            min-height: 170px;
+            border-radius: 26px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.26);
+            overflow: hidden;
+        }
+
+        .progress-card::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, rgba(125, 211, 252, 0.08), transparent 40%, rgba(142, 240, 180, 0.08));
+            pointer-events: none;
+        }
+
+        .label {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            font-size: clamp(1.6rem, 4vw, 3.2rem);
+            font-weight: 800;
+            letter-spacing: -0.05em;
+            transition: opacity 900ms ease, transform 900ms ease, filter 900ms ease;
+        }
+
+        .label.beginner {
+            color: #fff;
+            animation: beginnerShift var(--progress-time) ease forwards 8.2s;
+        }
+
+        .label.user {
+            color: var(--accent-2);
+            opacity: 0;
+            transform: translateY(14px) scale(0.92);
+            filter: blur(1px);
+            animation: userShift var(--progress-time) ease forwards 8.2s;
+        }
+
+        .arrow {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            display: grid;
+            place-items: center;
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: var(--accent);
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            opacity: 0;
+            animation: arrowPulse var(--progress-time) ease forwards 8.2s;
+        }
+
+        .arrow span {
+            animation: arrowMove var(--progress-time) ease-in-out forwards 8.2s;
+        }
+
+        @keyframes arrowPulse {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.76);
+            }
+
+            20% {
+                opacity: 1;
+            }
+
+            55% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.02);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        @keyframes arrowMove {
+
+            0%,
+            45% {
+                transform: translateY(0);
+            }
+
+            55% {
+                transform: translateY(6px);
+            }
+
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes beginnerShift {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+
+            45% {
+                opacity: 1;
+            }
+
+            65% {
+                opacity: 0.15;
+                transform: translateY(-14px) scale(0.92);
+                filter: blur(1px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: translateY(-18px) scale(0.88);
+                filter: blur(2px);
+            }
+        }
+
+        @keyframes userShift {
+
+            0%,
+            40% {
+                opacity: 0;
+                transform: translateY(14px) scale(0.92);
+                filter: blur(1px);
+            }
+
+            65% {
+                opacity: 1;
+                transform: translateY(0) scale(1.02);
+                filter: blur(0);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+                filter: blur(0);
+            }
+        }
+
+        .progression .note {
+            color: var(--muted);
+            text-align: center;
+            font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+            margin: 0;
+        }
+
+        @media (max-width: 720px) {
+            body {
+                padding: 14px;
+            }
+
+            .board {
+                padding: 20px 16px;
+                border-radius: 22px;
+            }
+
+            .roadmap {
+                padding: 22px 16px;
+            }
+
+            .steps {
+                gap: 12px;
+            }
+
+            .progress-card {
+                min-height: 152px;
+            }
+
+            .arrow {
+                width: 72px;
+                height: 72px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+
+            .steps li,
+            .connector,
+            .beginner,
+            .user,
+            .arrow {
+                opacity: 1 !important;
+                transform: none !important;
+                filter: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="board" aria-label="Belajar Git dan GitHub untuk pemula">
+        <section class="section">
+            <header class="hero">
+                <h1>Belajar Git &amp; GitHub<br />Untuk Pemula</h1>
+                <p class="subtitle">Roadmap belajar Git dan GitHub untuk pemula.</p>
+            </header>
+
+            <section class="roadmap-wrap" aria-label="Roadmap Git dan GitHub">
+                <div class="roadmap">
+                    <ul class="steps">
+                        <li class="root reveal-1">Git &amp; GitHub</li>
+                        <li class="connector c1" aria-hidden="true">│</li>
+                        <li class="reveal-2">Akun GitHub</li>
+                        <li class="connector c2" aria-hidden="true">│</li>
+                        <li class="reveal-3">Repository</li>
+                        <li class="connector c3" aria-hidden="true">│</li>
+                        <li class="reveal-4">Upload Project</li>
+                        <li class="connector c4" aria-hidden="true">│</li>
+                        <li class="reveal-5">Workflow Git</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section class="progression" aria-label="Progression beginner to GitHub user">
+                <p class="note">Progression akhir</p>
+                <div class="progress-card" aria-hidden="true">
+                    <div class="label beginner">Beginner</div>
+                    <div class="arrow"><span>↓</span></div>
+                    <div class="label user">GitHub User</div>
+                </div>
+            </section>
+        </section>
+    </main>
+</body>
+
+</html>
